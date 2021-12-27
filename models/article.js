@@ -7,9 +7,12 @@ const ArticleSchema = new Schema({
     body: {type: String, required: true},
     tagList: [{type: String}],
     createdAt: {type: String, required: true},
+    favoritesCount: {type: Number},
     updatedAt: {type: String},
     author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+},{
+    timestamps: false
 })
 
 module.exports = model('Article', ArticleSchema)

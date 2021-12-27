@@ -1,7 +1,9 @@
 const {check} = require('express-validator')
 
+const userInfo = check('user', 'User information is required').not().isEmpty()
+
 const commonMW = [
-    check('user', 'User information is required').not().isEmpty(),
+    userInfo,
     check('user.email', 'Email is required').not().isEmpty(),
     check('user.email', 'Email format is incorrect').isEmail(),
 ]
@@ -15,12 +17,6 @@ const registrationMW = [
     ...commonMW,
     check('user.username', 'Username is required').not().isEmpty(),
     check('user.password', 'Password is required').not().isEmpty(),
-]
-
-const updateUser = [
-    ...commonMW,
-    check('user.bio', 'Bio is required').not().isEmpty(),
-    check('user.image', 'Image is required').not().isEmpty(),
 ]
 
 const articleInfo = check('article', 'Article information is required').not().isEmpty()
@@ -41,7 +37,7 @@ const createCommentMW = [
 module.exports = {
     authMW,
     registrationMW,
-    updateUser,
+    userInfo,
     articleInfo,
     createArticleMW,
     createCommentMW

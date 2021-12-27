@@ -3,19 +3,30 @@ const jwt = require('jsonwebtoken')
 
 const UserModel = require('../models/user')
 
-const validarJWT = async(req = request, res = response, next) =>{
-    const token = req.header('Authorization').split(' ')[1]
-
-    if(!token){
-        return res.status(401).json({
-            msg: 'A valid token is required'
-        })
-    }
-
-    try{
+const getUserFromToken = async (token) => {
+    try {
         const {userId} = jwt.verify(token, process.env.SECRETKEY)
 
-        const user = await UserModel.findById(userId)
+        return await UserModel.findById(userId).populate('following').populate('favorite') 
+    } catch (err) {
+        return null
+    }
+}
+
+const validarJWT = async(req = request, res = response, next) =>{
+
+    let token = req.header('Authorization')
+    try{
+
+        if(!token){
+            return res.status(401).json({
+                msg: 'A valid token is required'
+            })
+        }
+
+        token = token.split(' ')[1]
+
+        const user = await getUserFromToken(token)
 
         if (!user){
             return res.status(401).json({
@@ -36,6 +47,28 @@ const validarJWT = async(req = request, res = response, next) =>{
     }
 }
 
+const verificarJWT = async(req = request, res = response, next) => {
+    let token = req.header('Authorization')
+
+    if(token){
+        try{
+            token = token.split(' ')[1]
+            const user = await getUserFromToken(token)
+            
+            req.user = user
+            req.token = token
+    
+            next()
+        } catch(err){
+            next()
+        }
+    } else {
+        next()
+    }
+    
+}
+
 module.exports = {
-    validarJWT
+    validarJWT,
+    verificarJWT
 }

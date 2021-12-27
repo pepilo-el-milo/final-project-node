@@ -6,6 +6,8 @@ const CommentSchema = new Schema({
     createdAt: {type: String, required: true},
     updatedAt: {type: String},
     author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+}, {
+    timestamps : false
 })
 
 module.exports = model('Comment', CommentSchema)
