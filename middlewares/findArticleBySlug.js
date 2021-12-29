@@ -15,10 +15,15 @@ const findArticleBySlug = async(req = request, res = response, next) => {
 
         req.article = article
 
+        let favorited = false, following = false;
+
         if(user){
-            req.following = (user.following.find((s) => s._id.equals(article.author._id))) ? true : false
-            req.favorited = (user.favorite.find((s) => s._id.equals(article._id))) ? true: false
+            following = (user.following.find((s) => s._id.equals(article.author._id))) ? true : false
+            favorited = (user.favorite.find((s) => s._id.equals(article._id))) ? true: false
         }
+
+        req.favorited = favorited
+        req.following = following
 
         next()
     } catch(errors) {

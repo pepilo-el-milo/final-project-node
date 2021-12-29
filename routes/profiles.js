@@ -1,14 +1,13 @@
 const {Router} = require('express')
 const {check, param} = require('express-validator')
-const { validarCampos } = require('../middlewares/validar-campos')
-const { validarJWT, verificarJWT } = require('../middlewares/validar-jwt')
+const {validarCampos, validarJWT, verificarJWT, findProfileByUser} = require('../middlewares/index')
 const { getProfile, followUser, unfollowUser } = require('../services/profiles')
 const router = Router()
 
 const paramValidation = param('username').not().isEmpty()
 
-router.get('/:username', [paramValidation, validarCampos, verificarJWT], getProfile)
-router.post('/:username/follow', [paramValidation, validarCampos,validarJWT], followUser)
-router.delete('/:username/follow', [paramValidation, validarCampos,validarJWT], unfollowUser)
+router.get('/:username', [paramValidation, validarCampos,findProfileByUser, verificarJWT], getProfile)
+router.post('/:username/follow', [paramValidation, validarCampos,findProfileByUser,validarJWT], followUser)
+router.delete('/:username/follow', [paramValidation, validarCampos,findProfileByUser,validarJWT], unfollowUser)
 
 module.exports = router

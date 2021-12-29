@@ -23,7 +23,7 @@ const login = async(req = request, res = response) => {
             })
         }
 
-        const token = jwt.sign({userId : user._id}, process.env.SECRETKEY, {expiresIn: '1h'})
+        const token = jwt.sign({userId : user._id}, process.env.SECRETKEY)
 
         return res.status(200).json({
             user: {
@@ -56,6 +56,15 @@ const createUser = async(req = request, res = response) => {
                 msg: `User with email ${email} already exists`
             })
         }
+
+        user = await UserModel.findOne({username})
+
+        if(user){
+            return res.status(400).json({
+                msg: `User with username ${username} already exists`
+            })
+        }
+
         user = new UserModel({
             username,
             email,

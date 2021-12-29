@@ -1,35 +1,15 @@
 const { request, response } = require("express");
 const Slug = require('slug')
 const ArticleModel = require('../models/article')
-const TagModel = require('../models/tags')
-const UserModel = require('../models/user')
-
-const checkTags = async (tagList = []) =>{
-    try {
-        for (let t of tagList) {
-            let tag = await TagModel.findOne({tag: t})
-            if(!tag){
-                tag = new TagModel({tag: t})
-                await tag.save()
-            }
-        }
-
-    } catch(error) {
-        console.error('No se guardaron tags', error)
-        return null
-    }
-}
+const {checkTags, articleResponse, mapArticles, findByUsername} = require('../helpers/index');
 
 const createArticle = async (req = request, res = response) => {
     
     try {
         const {title, description, body, tagList = []} = req.body.article
-
         const user = req.user
-
         const slugTitle = Slug(title)
-
-        const art = await ArticleModel.findOne({slug: slugTitle})
+        const art = req.article
 
         if(art){
             return res.status(400).json({
@@ -53,28 +33,12 @@ const createArticle = async (req = request, res = response) => {
 
         await article.populate('author', 'username bio image')
 
-        let following = (user.following.find((s) => s._id.equals(article.author._id) ))
+        let following = req.following
 
         await article.save()
 
         return res.status(201).json({
-            article:{
-                slug: article.slug,
-                title: article.title,
-                description: article.description,
-                body: article.body,
-                tagList: article.tagList,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt,
-                favorited: false,
-                favoritesCount: article.favoritesCount,
-                author: {
-                    username: article.author.username,
-                    bio: article.author.bio || null,
-                    image: article.author.image || null,
-                    following: (following) ? true : false,
-                }
-            }
+            article:articleResponse(article, false, following)
         }
         )
 
@@ -90,32 +54,10 @@ const createArticle = async (req = request, res = response) => {
 const getArticle = async(req = request, res = response) => {
     try {
         const article = req.article
-        const user = req.user
-        let favorited, following;
-         
-        if(user){
-            following = user.following.find((s) => s._id.equals(article.author._id))
-            favorited = user.favorite.find((s) => s._id.equals(article._id))
-        }
+        const favorited = req.favorited, following = req.following;
 
         return res.status(200).json({
-            article:{
-                slug: article.slug,
-                title: article.title,
-                description: article.description,
-                body: article.body,
-                tagList: article.tagList,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt,
-                favorited: (favorited) ? true : false,
-                favoritesCount: article.favoritesCount,
-                author: {
-                    username: article.author.username,
-                    bio: article.author.bio || null,
-                    image: article.author.image || null,
-                    following: (following) ? true : false,
-                }
-            }
+            article:articleResponse(article, favorited, following)
         })
 
 
@@ -130,15 +72,9 @@ const getArticle = async(req = request, res = response) => {
 const updateArticle = async(req = request, res = response) => {
     try {
         const {title, body, description} = req.body.article
-        const user = req.user
         const article = req.article
-
-        let favorited, following;
-         
-        if(user){
-            following = user.following.find((s) => s._id.equals(article.author._id))
-            favorited = user.favorite.find((s) => s._id.equals(article._id))
-        }
+        const favorited = req.favorited, following = req.following;
+        
 
         article.title = (title) ? title : article.title 
         article.description = (description) ? description : article.description 
@@ -149,23 +85,7 @@ const updateArticle = async(req = request, res = response) => {
         await article.save()
 
         return res.status(200).json({
-            article:{
-                slug: article.slug,
-                title: article.title,
-                description: article.description,
-                body: article.body,
-                tagList: article.tagList,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt,
-                favorited: (favorited) ? true : false,
-                favoritesCount: article.favoritesCount,
-                author: {
-                    username: article.author.username,
-                    bio: article.author.bio || null,
-                    image: article.author.image || null,
-                    following: (following) ? true : false,
-                }
-            }
+            article:articleResponse(article, favorited, following)
         })
 
     } catch (errors){
@@ -204,8 +124,7 @@ const favoriteArticle = async(req = request, res = response) => {
     try {
         const article = req.article
         const user = req.user
-        let following = req.following
-        let favorited = req.favorited
+        let favorited = req.favorited, following = req.following;
 
         if(favorited){
             return res.status(400).json({
@@ -224,23 +143,7 @@ const favoriteArticle = async(req = request, res = response) => {
         favorited = true
 
         return res.status(200).json({
-            article:{
-                slug: article.slug,
-                title: article.title,
-                description: article.description,
-                body: article.body,
-                tagList: article.tagList,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt,
-                favorited,
-                favoritesCount: article.favoritesCount,
-                author: {
-                    username: article.author.username,
-                    bio: article.author.bio || null,
-                    image: article.author.image || null,
-                    following
-                }
-            }
+            article:articleResponse(article, favorited, following)
         })
 
 
@@ -256,8 +159,7 @@ const unfavoriteArticle = async(req = request, res = response)=> {
     try{
         const article = req.article
         const user = req.user
-        let following = req.following
-        let favorited = req.favorited
+        let favorited = req.favorited, following = req.following;
 
         const artind = user.favorite.findIndex((a) => a._id.equals(article._id))
 
@@ -278,23 +180,7 @@ const unfavoriteArticle = async(req = request, res = response)=> {
         favorited = false
 
         return res.status(200).json({
-            article:{
-                slug: article.slug,
-                title: article.title,
-                description: article.description,
-                body: article.body,
-                tagList: article.tagList,
-                createdAt: article.createdAt,
-                updatedAt: article.updatedAt,
-                favorited,
-                favoritesCount: article.favoritesCount,
-                author: {
-                    username: article.author.username,
-                    bio: article.author.bio || null,
-                    image: article.author.image || null,
-                    following
-                }
-            }
+            article:articleResponse(article, favorited, following)
         })
 
     } catch(errors){
@@ -305,78 +191,40 @@ const unfavoriteArticle = async(req = request, res = response)=> {
     }
 }
 
-const mapArticles = (articles, user) => {
-    return articles.map((a) => {
-
-        let following = false
-        let favorited = false
-
-        if(user){
-            following = (user.following.find((s) => s._id.equals(a.author._id))) ? true : false
-            favorited = (user.favorite.find((s) => s._id.equals(a._id))) ? true: false
-        }
-
-        return {
-            slug: a.slug,
-            title: a.title,
-            description: a.description,
-            body: a.body,
-            tagList: a.tagList,
-            createdAt: a.createdAt,
-            updatedAt: a.updatedAt,
-            favorited,
-            favoritesCount: a.favoritesCount,
-            author: {
-                username: a.author.username,
-                bio: a.author.bio || null,
-                image: a.author.image || null,
-                following
-            }
-        }
-    })
-}
-
-// TODO: Pendiente Get Articles
 const getArticles = async(req = request, res = response) => {
 
     try {
         const user = req.user
         const {tag, author, favorited, limit = 20, offset = 0} = req.query
-
-        let articles;
+        let filter = {};
 
         if(favorited){
-            let userFav = await UserModel.find({username: favorited})
-            if(!user){
+            const userFav = await findByUsername(favorited)
+            if(!userFav){
                 return res.status(400).json({
                     msg: `User with username '${favorited}' could not be found`
                 })
             }
-
-            articles = await ArticleModel.find({_id: userFav.favorite},null, {limit, offset})
-            articles = mapArticles(articles, user)
-
-            return res.status(200).json({
-                articles,
-                articlesCount : articles.length
-            })
-
+            filter = {_id: userFav.favorite}
+        } else if(tag) {
+            filter = {tagList: tag}
+        } else if(author){
+            const userAuth = await findByUsername(author)
+            if(!userAuth){
+                return res.status(400).json({
+                    msg: `User with username '${author}' could not be found`
+                })
+            }
+            filter = {author: userAuth}
         }
 
-        const filter = {}
-        if(tag) filter['tagList'] = tag 
-        
-        articles = await ArticleModel.find(filter,null, {limit, offset}).populate('author').sort({date: 'asc'})
-
-        if(author){
-            articles = articles.filter((a) => a.author.username === author)
-        }
-
+        let articles = await ArticleModel.find(filter).sort({date: 'asc'}).limit(parseInt(limit)).skip(parseInt(offset)).populate('author')
+        const articlesCount = await ArticleModel.find(filter).countDocuments()
         articles = mapArticles(articles, user)
 
         return res.status(200).json({
             articles,
-            articlesCount: articles.length
+            articlesCount
         })
 
     } catch(errors){
@@ -392,46 +240,15 @@ const getFeed = async(req = request, res = response) => {
         const user = req.user
         const {limit = 20, offset = 0} = req.query
 
-        // let articles = []
+        let articles = await ArticleModel.find({author: user.following}).limit(parseInt(limit)).skip(parseInt(offset)).populate('author')
 
-        // for(let f of user.following){
-        //     articles.push()
-        // }
+        articles = mapArticles(articles, user)
 
-        let articles = await ArticleModel.find({author: user.following},null,{limit, offset}).where()
-
-        articles = articles.map((a) => {
-
-            let following = false
-            let favorited = false
-
-            if(user){
-                following = (user.following.find((s) => s._id.equals(a.author._id))) ? true : false
-                favorited = (user.favorite.find((s) => s._id.equals(a._id))) ? true: false
-            }
-
-            return {
-                slug: a.slug,
-                title: a.title,
-                description: a.description,
-                body: a.body,
-                tagList: a.tagList,
-                createdAt: a.createdAt,
-                updatedAt: a.updatedAt,
-                favorited,
-                favoritesCount: a.favoritesCount,
-                author: {
-                    username: a.author.username,
-                    bio: a.author.bio || null,
-                    image: a.author.image || null,
-                    following
-                }
-            }
-        })
+        let articlesCount = await ArticleModel.find({author: user.following}).countDocuments()
 
         return res.status(200).json({
             articles,
-            articlesCount: articles.length
+            articlesCount
         })
 
     } catch(errors){

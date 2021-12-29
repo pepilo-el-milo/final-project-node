@@ -1,5 +1,5 @@
 const { request, response } = require("express");
-const ArticleModel = require('../models/article')
+const { commentResponse, mapComments } = require("../helpers/responses");
 const CommentModel = require('../models/comments')
 
 const addComment = async(req = request, res= response) => {
@@ -30,18 +30,7 @@ const addComment = async(req = request, res= response) => {
         await article.save()
 
         res.status(201).json({
-            comment: {
-                id: comment.id,
-                body: comment.body,
-                createdAt: comment.createdAt,
-                updatedAt: comment.updatedAt,
-                author: {
-                    username: user.username,
-                    bio: user.bio || null,
-                    image: user.image || null,
-                    following: false
-                }
-            }
+            comment: commentResponse(comment, user, false)
         })
 
 
@@ -56,26 +45,8 @@ const addComment = async(req = request, res= response) => {
 const getComments = async(req = request, res= response) => {
     try {
         const article = req.article
-        const user = req.user
 
-        if(user){
-            var following = user.following.find((s) => s._id.equals(article.author._id))
-        }
-
-        const comments = article.comments.map((com) => {
-            return {
-                id: com.id,
-                createdAt: com.createdAt,
-                updatedAt: com.updatedAt,
-                body: com.body,
-                author: {
-                    username: com.author.username,
-                    bio: com.author.bio || null,
-                    image: com.author.image || null,
-                    following: (following) ? true : false
-                }
-            }
-        })
+        const comments = mapComments(article.comments)
 
         return res.status(200).json({
             comments

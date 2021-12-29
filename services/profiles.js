@@ -1,32 +1,20 @@
 const { request, response } = require("express");
-const UserModel = require('../models/user')
+const { profileResponse } = require("../helpers/responses");
+
 
 const getProfile = async (req = request, res = response) => {
     try {
-        const {username} = req.params
         const user = req.user
-        let profile = await UserModel.findOne({username})
+        const profile = req.profile
 
-        if(!profile) {
-            return res.status(400).json({
-                msg: `Profile with username ${username} was not found`,
-                errors
-            })
-        }
-
-        let following;
+        let following = false;
 
         if(user){
-            following = (user.following.find((s) => s._id.equals(profile._id) ))
+            following = (user.following.find((s) => s._id.equals(profile._id) )) ? true : false
         }
 
         return res.status(200).json({
-            profile: {
-                username: profile.username,
-                bio: profile.bio || null,
-                image: profile.image || null,
-                following: (following) ? true : false
-            }
+            profile: profileResponse(profile, following)
         })
 
     } catch(errors) {
@@ -39,16 +27,8 @@ const getProfile = async (req = request, res = response) => {
 
 const followUser = async (req = request, res = response) => {
     try{
-        const {username} = req.params
         const user = req.user
-        let profile = await UserModel.findOne({username})
-
-        if(!profile) {
-            return res.status(400).json({
-                msg: `Profile with username ${username} was not found`,
-                errors
-            })
-        }
+        const profile = req.profile
 
         if(profile._id.equals(user._id)) {
             return res.status(400).json({
@@ -57,19 +37,14 @@ const followUser = async (req = request, res = response) => {
             })
         }
 
-        let following = (user.following.find((s) => s._id === profile._id ))
+        let following = (user.following.find((s) => s._id === profile._id )) ? true : false
 
         if(!following) {
             user.following.push(profile)
             await user.save()
 
             return res.status(200).json({
-                profile: {
-                    username: profile.username,
-                    bio: profile.bio || null,
-                    image: profile.image|| null,
-                    following: true
-                }
+                profile: profileResponse(profile, true)
             })
         } else {
             return res.status(400).json({
@@ -88,16 +63,8 @@ const followUser = async (req = request, res = response) => {
 
 const unfollowUser = async (req = request, res = response) => {
     try{
-        const {username} = req.params
         const user = req.user
-        let profile = await UserModel.findOne({username})
-
-        if(!profile) {
-            return res.status(400).json({
-                msg: `Profile with username ${username} was not found`,
-                errors
-            })
-        }
+        const profile = req.profile
 
         if(profile._id.equals(user._id)) {
             return res.status(400).json({
@@ -112,12 +79,7 @@ const unfollowUser = async (req = request, res = response) => {
         await user.save()
 
         return res.status(200).json({
-            profile: {
-                username: profile.username,
-                bio: profile.bio || null,
-                image: profile.image|| null,
-                following: false
-            }
+            profile: profileResponse(profile, false)
         })
 
     } catch(errors) {
