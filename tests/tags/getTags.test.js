@@ -3,13 +3,13 @@ const app = require('../../app')
 
 jest.setTimeout(20000)
 
-describe('Tags', () => {
-    describe('GET /api/tags', () => {
-        it('Should get Tags', (done) => {
-            request(app)
-            .get('/tags')
-            .expect('Content-Type', /json/)
-            .expect(200, () => done())
-        })
+describe('GET /api/tags', () => {
+    it('Should get Tags', async (done) => {
+        await request(app)
+        .get('/api/tags')
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200)
     })
 })

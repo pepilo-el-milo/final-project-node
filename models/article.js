@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+const {Schema, model} = require("mongoose");
 
 const ArticleSchema = new Schema({
     title: {type: String, required: true},
@@ -9,10 +9,10 @@ const ArticleSchema = new Schema({
     createdAt: {type: String, required: true},
     favoritesCount: {type: Number},
     updatedAt: {type: String},
-    author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+    author: {type: Schema.Types.ObjectId, ref: "User", required: true},
+    comments: [{type: Schema.Types.ObjectId, ref: "Comment"}]
 },{
     timestamps: false
-})
+});
 
-module.exports = model('Article', ArticleSchema)
+module.exports = model("Article", ArticleSchema);

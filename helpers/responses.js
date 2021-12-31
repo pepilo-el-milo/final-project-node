@@ -16,23 +16,23 @@ const articleResponse = (article, favorited, following) => {
             image: article.author.image || null,
             following,
         }
-    }
-}
+    };
+};
 
 const mapArticles = (articles, user) => {
     return articles.map((a) => {
 
-        let following = false
-        let favorited = false
+        let following = false;
+        let favorited = false;
 
         if(user){
-            following = (user.following.find((s) => s._id.equals(a.author._id))) ? true : false
-            favorited = (user.favorite.find((s) => s._id.equals(a._id))) ? true: false
+            following = (user.following.find((s) => s._id.equals(a.author._id))) ? true : false;
+            favorited = (user.favorite.find((s) => s._id.equals(a._id))) ? true: false;
         }
 
-        return articleResponse(a, favorited, following)
-    })
-}
+        return articleResponse(a, favorited, following);
+    });
+};
 
 const profileResponse = (user, following) => {
     return {
@@ -40,8 +40,8 @@ const profileResponse = (user, following) => {
         bio: user.bio || null,
         image: user.image || null,
         following
-    }
-}
+    };
+};
 
 const userResponse = (user, token) => {
     return {
@@ -50,8 +50,8 @@ const userResponse = (user, token) => {
         username: user.username,
         bio: user.bio || null,
         image: user.image || null
-    }
-}
+    };
+};
 
 const commentResponse = (comment, user, following) => {
     return {
@@ -65,21 +65,21 @@ const commentResponse = (comment, user, following) => {
             image: user.image || null,
             following
         }
-    }
-}
+    };
+};
 
 const mapComments = (comments, user) => {
     return comments.map((com) => {
 
-        let following = false
+        let following = false;
 
         if(user){
-            following = (user.following.find((s) => s._id.equals(com.author._id)))? true: false            
+            following = (user.following.find((s) => s._id.equals(com.author._id)))? true: false;            
         }
 
-        return commentResponse(com, com.author, following)
-    })
-}
+        return commentResponse(com, com.author, following);
+    });
+};
 
 module.exports = {
     articleResponse,
@@ -88,4 +88,4 @@ module.exports = {
     userResponse,
     commentResponse,
     mapComments
-}
+};

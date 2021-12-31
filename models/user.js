@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+const {Schema, model} = require("mongoose");
 
 const UserSchema = new Schema({
     email: {
@@ -16,8 +16,8 @@ const UserSchema = new Schema({
     },
     bio: {type: String},
     image: {type: String},
-    following: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    favorite: [{type: Schema.Types.ObjectId, ref: 'Article'}]
-})
+    following: [{type: Schema.Types.ObjectId, ref: "User"}],
+    favorite: [{type: Schema.Types.ObjectId, ref: "Article"}]
+});
 
-module.exports = model('User', UserSchema)
+module.exports = model("User", UserSchema);

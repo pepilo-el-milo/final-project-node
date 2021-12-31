@@ -1,7 +1,7 @@
 const request = require('supertest')
 const app = require('../../app')
 
-jest.setTimeout(10000)
+jest.setTimeout(20000)
 
 describe('Auth', () => {
     describe('POST /users', () => {
@@ -11,7 +11,7 @@ describe('Auth', () => {
             .send({email:"test@hotmail.com", password:"test2021", username:"testuser"})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400, done)
+            .expect(422, done)
         })
     })
     describe('POST /users', () => {
@@ -21,17 +21,18 @@ describe('Auth', () => {
             .send({user:{username:"testuser"}})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(400, done)
+            .expect(422, done)
         })
     })
     describe('POST /users', () => {
-        it('Should register user', (done) => {
-            request(app)
+        it('Should register user', async(done) => {
+            await request(app)
             .post('/api/users')
-            .send({user:{email:"test@hotmail.com", password:"test2021", username:"testuser"}})
             .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .send({user:{email:"test@hotmail.com", password:"test2021", username:"testuser"}})
             .expect('Content-Type', /json/)
-            .expect(201, done)
+            .expect(201)
         })
     })
 })

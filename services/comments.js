@@ -1,18 +1,19 @@
 const { request, response } = require("express");
 const { commentResponse, mapComments } = require("../helpers/responses");
-const CommentModel = require('../models/comments')
+const CommentModel = require("../models/comments");
 
 const addComment = async(req = request, res= response) => {
     try {
-        const {body} = req.body.comment
-        const user = req.user
-        const article = req.article
+        const {body} = req.body.comment;
+        const user = req.user;
+        const article = req.article;
+
+        let count = 0;
 
         if(article.comments){
-            var count = article.comments.length
+            count = article.comments.length;
         } else {
-            var count = 0
-            article.comments = []
+            article.comments = [];
         }
 
         const comment = new CommentModel({
@@ -21,86 +22,86 @@ const addComment = async(req = request, res= response) => {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             author: user
-        })
+        });
 
-        await comment.save()
+        await comment.save();
 
-        article.comments.push(comment)
+        article.comments.push(comment);
 
-        await article.save()
+        await article.save();
 
         res.status(201).json({
             comment: commentResponse(comment, user, false)
-        })
+        });
 
 
     } catch (errors) {
         return res.status(500).json({
-            msg: 'Internal Server Error',
+            msg: "Internal Server Error",
             errors
-        })  
+        });
     }
-}
+};
 
 const getComments = async(req = request, res= response) => {
     try {
-        const article = req.article
+        const article = req.article;
 
-        const comments = mapComments(article.comments)
+        const comments = mapComments(article.comments);
 
         return res.status(200).json({
             comments
-        })
+        });
     } catch(errors){
         return res.status(500).json({
-            msg: 'Internal Server Error',
+            msg: "Internal Server Error",
             errors
-        })
+        });
     }
-}
+};
 
 const deleteComment = async(req = request, res= response) => {
     
     try {
-        const article = req.article
-        const user = req.user
-        const {id} = req.params
+        const article = req.article;
+        const user = req.user;
+        const {id} = req.params;
 
-        const comind = article.comments.findIndex((c) => c.id === parseInt(id))
+        const comind = article.comments.findIndex((c) => c.id === parseInt(id));
 
         if(comind < 0){
             return res.status(400).json({
                 msg: `Comment wiht id '${id}' was not found on Article '${article.title}'`
-            })
+            });
         }
 
         if(!user._id.equals(article.comments[comind].author._id)){
             return res.status(400).json({
-                msg: `You are not the author this comment.`
-            })
+                msg: "You are not the author this comment."
+            });
         }
 
-        const comdel = article.comments.splice(comind, 1)
+        const comdel = article.comments.splice(comind, 1);
 
-        await article.save()
+        await article.save();
 
-        await CommentModel.deleteOne({_id: comdel._id})
+        await CommentModel.deleteOne({_id: comdel._id});
 
         return res.status(200).json({
-            msg: 'Comment deleted successfully'
-        })
+            msg: "Comment deleted successfully"
+        });
 
     } catch (errors){
         return res.status(500).json({
-            msg: 'Internal Server Error',
+            msg: "Internal Server Error",
             errors
-        })
+        });
     }
-}
+};
 
 
 module.exports = {
     addComment,
     getComments,
     deleteComment
-}
+};
