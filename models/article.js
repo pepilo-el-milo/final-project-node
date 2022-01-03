@@ -1,5 +1,10 @@
 const {Schema, model} = require("mongoose");
 
+/**
+ * Article Schema
+ * @constant
+ * @type {Schema}
+ */
 const ArticleSchema = new Schema({
     title: {type: String, required: true},
     slug: {type: String, required: true},

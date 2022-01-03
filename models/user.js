@@ -1,5 +1,10 @@
 const {Schema, model} = require("mongoose");
 
+/**
+ * User Schema
+ * @constant
+ * @type {Schema}
+ */
 const UserSchema = new Schema({
     email: {
         type: String,

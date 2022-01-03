@@ -1,5 +1,13 @@
 const TagModel = require("../models/tags");
 
+/**
+ * Checks if tags exist on database, if not, they are added.
+ * 
+ * @async
+ * @function
+ * @param {string[]} tagList 
+ * @returns {any}
+ */
 const checkTags = async (tagList = []) =>{
     try {
         for (let t of tagList) {

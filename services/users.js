@@ -4,6 +4,14 @@ const bcryptjs = require("bcryptjs");
 const UserModel = require("../models/user");
 const { userResponse } = require("../helpers/responses");
 
+/**
+ * Get current User information.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getUser = async (req = request, res= response) => {
     try {
         const user = await UserModel.findById(req.user._id);
@@ -20,6 +28,15 @@ const getUser = async (req = request, res= response) => {
     }
 };
 
+/**
+ * Updates current User information.
+ * 
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const updateUser = async(req = request, res = response) => {
     try {
         const user = req.user;

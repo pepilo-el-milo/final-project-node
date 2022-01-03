@@ -1,7 +1,14 @@
 const { request, response } = require("express");
 const { profileResponse } = require("../helpers/responses");
 
-
+/**
+ * Returns a user profile.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getProfile = async (req = request, res = response) => {
     try {
         const user = req.user;
@@ -25,6 +32,14 @@ const getProfile = async (req = request, res = response) => {
     }
 };
 
+/**
+ * Follows a user.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const followUser = async (req = request, res = response) => {
     try{
         const user = req.user;
@@ -59,6 +74,14 @@ const followUser = async (req = request, res = response) => {
     }
 };
 
+/**
+ * Unfollows a user.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const unfollowUser = async (req = request, res = response) => {
     try{
         const user = req.user;

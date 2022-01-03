@@ -1,6 +1,14 @@
 const { request, response } = require("express");
 const ArticleModel = require("../models/article");
 
+/**
+ * Searchs article by title slug.
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Callback} next 
+ * @returns {any}
+ */
 const findArticleBySlug = async(req = request, res = response, next) => {
     try{
         const {slug} = req.params;

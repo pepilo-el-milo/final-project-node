@@ -2,6 +2,14 @@ const { request, response } = require("express");
 const { commentResponse, mapComments } = require("../helpers/responses");
 const CommentModel = require("../models/comments");
 
+/**
+ * Adds a comment for an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const addComment = async(req = request, res= response) => {
     try {
         const {body} = req.body.comment;
@@ -43,6 +51,14 @@ const addComment = async(req = request, res= response) => {
     }
 };
 
+/**
+ * Returns a list of comments from an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getComments = async(req = request, res= response) => {
     try {
         const article = req.article;
@@ -60,6 +76,14 @@ const getComments = async(req = request, res= response) => {
     }
 };
 
+/**
+ * Deletes a comment from an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const deleteComment = async(req = request, res= response) => {
     
     try {

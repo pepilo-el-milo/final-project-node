@@ -4,6 +4,14 @@ const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user");
 require("dotenv").config();
 
+/**
+ * Logs in a user.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const login = async(req = request, res = response) => {
     const {email, password} = req.body.user;
 
@@ -44,6 +52,14 @@ const login = async(req = request, res = response) => {
 
 };
 
+/**
+ * Creates a user.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const createUser = async(req = request, res = response) => {
 
     try {

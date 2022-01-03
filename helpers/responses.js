@@ -1,4 +1,13 @@
 
+/**
+ * Returns response format for an article.
+ * 
+ * @function
+ * @param {ArticleModel} article 
+ * @param {boolean} favorited 
+ * @param {boolean} following 
+ * @returns {Object}
+ */
 const articleResponse = (article, favorited, following) => {
     return {
         slug: article.slug,
@@ -18,7 +27,14 @@ const articleResponse = (article, favorited, following) => {
         }
     };
 };
-
+/**
+ * Maps and formats articles from a list of articles.
+ * 
+ * @function
+ * @param {ArticleModel[]} articles 
+ * @param {UserModel} user 
+ * @returns {Object[]}
+ */
 const mapArticles = (articles, user) => {
     return articles.map((a) => {
 
@@ -34,6 +50,14 @@ const mapArticles = (articles, user) => {
     });
 };
 
+/**
+ * Returns response format for a user profile
+ * 
+ * @function
+ * @param {UserModel} user 
+ * @param {boolean} following 
+ * @returns {Object}
+ */
 const profileResponse = (user, following) => {
     return {
         username: user.username,
@@ -43,6 +67,14 @@ const profileResponse = (user, following) => {
     };
 };
 
+/**
+ * Returns response format for a user
+ * 
+ * @function
+ * @param {UserModel} user 
+ * @param {string} token 
+ * @returns {Object}
+ */
 const userResponse = (user, token) => {
     return {
         email: user.email,
@@ -53,6 +85,15 @@ const userResponse = (user, token) => {
     };
 };
 
+/**
+ * Returns response format for a comment
+ * 
+ * @function
+ * @param {CommentModel} comment 
+ * @param {UserModel} user 
+ * @param {boolean} following 
+ * @returns {Object}
+ */
 const commentResponse = (comment, user, following) => {
     return {
         id: comment.id,
@@ -68,6 +109,14 @@ const commentResponse = (comment, user, following) => {
     };
 };
 
+/**
+ * Maps and formats comments from a list of comments.
+ * 
+ * @function
+ * @param {CommentModel[]} comments 
+ * @param {UserModel} user 
+ * @returns {Object[]}
+ */
 const mapComments = (comments, user) => {
     return comments.map((com) => {
 

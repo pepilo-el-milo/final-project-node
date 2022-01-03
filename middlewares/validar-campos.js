@@ -1,5 +1,13 @@
 const { validationResult } = require("express-validator");
 
+/**
+ * Validate if there are no errors regarding the fields comming from the last middlewares.
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Callback} next 
+ * @returns {any}
+ */
 const validarCampos = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()){

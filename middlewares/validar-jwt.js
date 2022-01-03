@@ -3,6 +3,13 @@ const jwt = require("jsonwebtoken");
 
 const UserModel = require("../models/user");
 
+/**
+ * Searchs user from given token.
+ * @async
+ * @function
+ * @param {string} token 
+ * @returns {UserModel}
+ */
 const getUserFromToken = async (token) => {
     try {
         const {userId} = jwt.verify(token, process.env.SECRETKEY);
@@ -13,6 +20,15 @@ const getUserFromToken = async (token) => {
     }
 };
 
+/**
+ * Validates if token is not valid or expired.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Callback} next 
+ * @returns {any}
+ */
 const validarJWT = async(req = request, res = response, next) =>{
 
     let token = req.header("Authorization");
@@ -46,6 +62,14 @@ const validarJWT = async(req = request, res = response, next) =>{
     }
 };
 
+/**
+ * Verifies if a token was given or not.
+ * @async
+ * @function
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
 const verificarJWT = async(req = request, res, next) => {
     let token = req.header("Authorization");
 

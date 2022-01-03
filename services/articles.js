@@ -3,6 +3,14 @@ const Slug = require("slug");
 const ArticleModel = require("../models/article");
 const {checkTags, articleResponse, mapArticles, findByUsername} = require("../helpers/index");
 
+/**
+ * Creates and saves article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const createArticle = async (req = request, res = response) => {
     
     try {
@@ -51,6 +59,14 @@ const createArticle = async (req = request, res = response) => {
     }
 };
 
+/**
+ * Returns article by slug.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getArticle = async(req = request, res = response) => {
     try {
         const article = req.article;
@@ -69,12 +85,26 @@ const getArticle = async(req = request, res = response) => {
     }
 };
 
+/**
+ * Updates article information.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const updateArticle = async(req = request, res = response) => {
     try {
         const {title, body, description} = req.body.article;
         const article = req.article;
+        const user = req.user;
         const favorited = req.favorited, following = req.following;
         
+        if(!user._id.equals(article.author._id)){
+            return res.status(403).json({
+                msg: `You are not the author of the Article '${article.title}'.`
+            });
+        }
 
         article.title = (title) ? title : article.title; 
         article.description = (description) ? description : article.description; 
@@ -96,13 +126,21 @@ const updateArticle = async(req = request, res = response) => {
     }
 };
 
+/**
+ * Deletes an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const deleteArticle = async(req = request, res = response) => {
     try {
         const article = req.article;
         const user = req.user;
 
         if(!user._id.equals(article.author._id)){
-            return res.status(400).json({
+            return res.status(403).json({
                 msg: `You are not the author of the Article '${article.title}'.`
             });
         }
@@ -120,6 +158,14 @@ const deleteArticle = async(req = request, res = response) => {
     }
 };
 
+/**
+ * Favorites an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const favoriteArticle = async(req = request, res = response) => {
     try {
         const article = req.article;
@@ -155,6 +201,14 @@ const favoriteArticle = async(req = request, res = response) => {
     }
 };
 
+/**
+ * Unfavorite an article.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const unfavoriteArticle = async(req = request, res = response)=> {
     try{
         const article = req.article;
@@ -191,6 +245,14 @@ const unfavoriteArticle = async(req = request, res = response)=> {
     }
 };
 
+/**
+ * Returns a list of articles by a filter.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getArticles = async(req = request, res = response) => {
 
     try {
@@ -235,6 +297,14 @@ const getArticles = async(req = request, res = response) => {
     }
 };
 
+/**
+ * Returns a list of articles.
+ * @async
+ * @function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {any}
+ */
 const getFeed = async(req = request, res = response) => {
     try {
         const user = req.user;
