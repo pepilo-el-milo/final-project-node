@@ -2,6 +2,7 @@ const { request, response } = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user");
+const logger = require("../helpers/logger");
 require("dotenv").config();
 
 /**
@@ -18,6 +19,7 @@ const login = async(req = request, res = response) => {
     try {
         const user = await UserModel.findOne({email});
         if(!user){
+            logger.warn(`User with email ${email} doesn't exist`);
             return res.status(400).json({
                 msg: `User with email ${email} doesn't exist`
             });
@@ -26,6 +28,7 @@ const login = async(req = request, res = response) => {
         const validPassword = bcryptjs.compareSync(password,user.password);
 
         if(!validPassword){
+            logger.warn("Email / Password are incorrect");
             return res.status(403).json({
                 msg: "Email / Password are incorrect"
             });
@@ -44,6 +47,7 @@ const login = async(req = request, res = response) => {
         });
         
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -68,6 +72,7 @@ const createUser = async(req = request, res = response) => {
         let user = await UserModel.findOne({email});
 
         if(user){
+            logger.warn(`User with email ${email} already exists`);
             return res.status(400).json({
                 msg: `User with email ${email} already exists`
             });
@@ -76,6 +81,7 @@ const createUser = async(req = request, res = response) => {
         user = await UserModel.findOne({username});
 
         if(user){
+            logger.warn(`User with username ${username} already exists`);
             return res.status(400).json({
                 msg: `User with username ${username} already exists`
             });
@@ -105,6 +111,7 @@ const createUser = async(req = request, res = response) => {
         });
 
     } catch(errors){
+        logger.error("Internal Server Error - " + errors);
         res.status(500).json({
             msg: "Internal Server Error",
             errors

@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const logger = require("../helpers/logger");
 
 /**
  * Validate if there are no errors regarding the fields comming from the last middlewares.
@@ -10,13 +11,15 @@ const { validationResult } = require("express-validator");
  */
 const validarCampos = (req, res, next) => {
     const errors = validationResult(req);
+    const msgs = {};
+    errors.array().forEach((err) => {
+        const params = err.msg.split("-");
+        msgs[params[0]] = params[1];
+    });
     if (!errors.isEmpty()){
+        logger.warn(JSON.stringify(msgs));
         return res.status(422).json({
-            errors:{
-                body: [
-                  "can't be empty"
-                ]
-              }
+            errors:msgs
         });
     }
     next();

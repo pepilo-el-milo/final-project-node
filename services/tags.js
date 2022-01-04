@@ -1,6 +1,6 @@
 const { response } = require("express");
 const TagModel = require("../models/tags");
-
+const logger = require("../helpers/logger");
 
 /**
  * Get articles tags.
@@ -21,6 +21,7 @@ const getTags = async(req, res = response) => {
             tags
         });
     } catch(errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

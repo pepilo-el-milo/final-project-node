@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const { commentResponse, mapComments } = require("../helpers/responses");
 const CommentModel = require("../models/comments");
+const logger = require("../helpers/logger");
 
 /**
  * Adds a comment for an article.
@@ -44,6 +45,7 @@ const addComment = async(req = request, res= response) => {
 
 
     } catch (errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -69,6 +71,7 @@ const getComments = async(req = request, res= response) => {
             comments
         });
     } catch(errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -94,12 +97,14 @@ const deleteComment = async(req = request, res= response) => {
         const comind = article.comments.findIndex((c) => c.id === parseInt(id));
 
         if(comind < 0){
+            logger.warn(`Comment wiht id '${id}' was not found on Article '${article.title}'`);
             return res.status(400).json({
                 msg: `Comment wiht id '${id}' was not found on Article '${article.title}'`
             });
         }
 
         if(!user._id.equals(article.comments[comind].author._id)){
+            logger.warn("You are not the author this comment.");
             return res.status(400).json({
                 msg: "You are not the author this comment."
             });
@@ -116,6 +121,7 @@ const deleteComment = async(req = request, res= response) => {
         });
 
     } catch (errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

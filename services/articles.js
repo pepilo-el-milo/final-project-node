@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const Slug = require("slug");
 const ArticleModel = require("../models/article");
+const logger = require("../helpers/logger");
 const {checkTags, articleResponse, mapArticles, findByUsername} = require("../helpers/index");
 
 /**
@@ -20,6 +21,7 @@ const createArticle = async (req = request, res = response) => {
         const art = req.article;
 
         if(art){
+            logger.warn(`Article with title '${title}' already exists`);
             return res.status(400).json({
                 msg: `Article with title '${title}' already exists`
             });
@@ -52,6 +54,7 @@ const createArticle = async (req = request, res = response) => {
 
 
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -78,6 +81,7 @@ const getArticle = async(req = request, res = response) => {
 
 
     } catch(errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -101,6 +105,7 @@ const updateArticle = async(req = request, res = response) => {
         const favorited = req.favorited, following = req.following;
         
         if(!user._id.equals(article.author._id)){
+            logger.warn(`User requesting is not the author of the Article '${article.title}'.`);
             return res.status(403).json({
                 msg: `You are not the author of the Article '${article.title}'.`
             });
@@ -119,6 +124,7 @@ const updateArticle = async(req = request, res = response) => {
         });
 
     } catch (errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -140,6 +146,7 @@ const deleteArticle = async(req = request, res = response) => {
         const user = req.user;
 
         if(!user._id.equals(article.author._id)){
+            logger.warn(`User requesting is not the author of the Article '${article.title}'.`);
             return res.status(403).json({
                 msg: `You are not the author of the Article '${article.title}'.`
             });
@@ -151,6 +158,7 @@ const deleteArticle = async(req = request, res = response) => {
             msg: `Article '${article.title}' successfully deleted.`
         });
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -173,6 +181,7 @@ const favoriteArticle = async(req = request, res = response) => {
         let favorited = req.favorited, following = req.following;
 
         if(favorited){
+            logger.warn("This article is already favorited by the user.");
             return res.status(400).json({
                 msg: "This article is already favorited."
             });
@@ -194,6 +203,7 @@ const favoriteArticle = async(req = request, res = response) => {
 
 
     } catch(errors){
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -218,6 +228,7 @@ const unfavoriteArticle = async(req = request, res = response)=> {
         const artind = user.favorite.findIndex((a) => a._id.equals(article._id));
 
         if(artind < 0){
+            logger.warn("This article is already unfavorited by the user.");
             return res.status(400).json({
                 msg: "This article is already unfavorited."
             });
@@ -263,6 +274,7 @@ const getArticles = async(req = request, res = response) => {
         if(favorited){
             const userFav = await findByUsername(favorited);
             if(!userFav){
+                logger.warn(`User with username '${favorited}' could not be found`);
                 return res.status(400).json({
                     msg: `User with username '${favorited}' could not be found`
                 });
@@ -273,6 +285,7 @@ const getArticles = async(req = request, res = response) => {
         } else if(author){
             const userAuth = await findByUsername(author);
             if(!userAuth){
+                logger.warn(`User with username '${author}' could not be found`);
                 return res.status(400).json({
                     msg: `User with username '${author}' could not be found`
                 });
@@ -290,6 +303,7 @@ const getArticles = async(req = request, res = response) => {
         });
 
     } catch(errors){
+        logger.error("Internal Server Error - "+ errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -322,6 +336,7 @@ const getFeed = async(req = request, res = response) => {
         });
 
     } catch(errors){
+        logger.error("Internal Server Error - "+ errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

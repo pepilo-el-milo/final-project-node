@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 
 const UserModel = require("../models/user");
 const { userResponse } = require("../helpers/responses");
+const logger = require("../helpers/logger");
 
 /**
  * Get current User information.
@@ -21,6 +22,7 @@ const getUser = async (req = request, res= response) => {
             user: userResponse(user, token)
         });
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -60,6 +62,7 @@ const updateUser = async(req = request, res = response) => {
         });
 
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         res.status(500).json({
             msg: "Internal Server Error",
             errors

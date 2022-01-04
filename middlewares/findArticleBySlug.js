@@ -1,5 +1,6 @@
 const { request, response } = require("express");
 const ArticleModel = require("../models/article");
+const logger = require("../helpers/logger");
 
 /**
  * Searchs article by title slug.
@@ -18,6 +19,7 @@ const findArticleBySlug = async(req = request, res = response, next) => {
         .populate("author", "username bio image")
         .populate({path: "comments", populate: {path: "author"}});
         if(!article){
+            logger.warn(`Article with title '${slug}' was not found`);
             return res.status(400).json({
                 msg: `Article with title '${slug}' was not found`
             });
@@ -37,6 +39,7 @@ const findArticleBySlug = async(req = request, res = response, next) => {
 
         next();
     } catch(errors) {
+        logger.error("Internal Server Error " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

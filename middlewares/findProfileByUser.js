@@ -1,5 +1,6 @@
 const { request, response } = require("express");
 const UserModel = require("../models/user");
+const logger = require("../helpers/logger");
 
 /**
  * Searchs user profile by username.
@@ -15,6 +16,7 @@ const findProfileByUser = async(req = request, res = response, next) => {
         const profile = await UserModel.findOne({username});
 
         if(!profile) {
+            logger.warn(`Profile with username ${username} was not found`);
             return res.status(403).json({
                 msg: `Profile with username ${username} was not found`
             });
@@ -23,6 +25,7 @@ const findProfileByUser = async(req = request, res = response, next) => {
             next();
         }
     } catch(errors) {
+        logger.error("Internal Server Error " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

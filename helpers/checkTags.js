@@ -1,4 +1,5 @@
 const TagModel = require("../models/tags");
+const logger = require("./logger");
 
 /**
  * Checks if tags exist on database, if not, they are added.
@@ -19,7 +20,7 @@ const checkTags = async (tagList = []) =>{
         }
 
     } catch(error) {
-        console.error("No se guardaron tags", error);
+        logger.error("No se guardaron tags", error);
         return null;
     }
 };

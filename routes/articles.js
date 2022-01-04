@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const { validarJWT, verificarJWT, findArticleBySlug } = require("../middlewares/index");
+const { validarJWT, verificarJWT, findArticleBySlug, validarCampos } = require("../middlewares/index");
 const { createArticleMW, articleInfo} = require("../middlewares/constantes");
 const commentRouter = require("./comments");
 const { createArticle, getArticle, updateArticle, deleteArticle, getArticles, favoriteArticle, unfavoriteArticle, getFeed } = require("../services/articles");
@@ -198,7 +198,7 @@ router.get("/:slug", [verificarJWT, findArticleBySlug] , getArticle);
  *        500:
  *          $ref: '#/components/responses/500'
  */
-router.post("/", [createArticleMW, validarJWT] , createArticle);
+router.post("/", [createArticleMW, validarCampos, validarJWT] , createArticle);
 /**
  * @swagger
  * /api/articles/{slug}:
@@ -236,7 +236,7 @@ router.post("/", [createArticleMW, validarJWT] , createArticle);
  *        500:
  *          $ref: '#/components/responses/500'
  */
-router.put("/:slug", [articleInfo,  validarJWT, findArticleBySlug] , updateArticle);
+router.put("/:slug", [articleInfo, validarCampos,  validarJWT, findArticleBySlug] , updateArticle);
 /**
  * @swagger
  * /api/articles/{slug}:

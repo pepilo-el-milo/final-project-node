@@ -1,5 +1,6 @@
 const { request, response } = require("express");
 const { profileResponse } = require("../helpers/responses");
+const logger = require("../helpers/logger");
 
 /**
  * Returns a user profile.
@@ -25,6 +26,7 @@ const getProfile = async (req = request, res = response) => {
         });
 
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -46,6 +48,7 @@ const followUser = async (req = request, res = response) => {
         const profile = req.profile;
 
         if(profile._id.equals(user._id)) {
+            logger.warn("A user can't be followed by itself.");
             return res.status(400).json({
             msg: "A user can't be followed by itself."
             });
@@ -61,12 +64,14 @@ const followUser = async (req = request, res = response) => {
                 profile: profileResponse(profile, true)
             });
         } else {
+            logger.warn(`User requesting already follows the user ${user.username}`);
             return res.status(400).json({
                 msg: `You already follow the user ${user.username}`
                 });
         }
 
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors
@@ -88,6 +93,7 @@ const unfollowUser = async (req = request, res = response) => {
         const profile = req.profile;
 
         if(profile._id.equals(user._id)) {
+            logger.warn("A user can't be unfollowed by itself.");
             return res.status(400).json({
             msg: "A user can't be unfollowed by itself."
             });
@@ -103,6 +109,7 @@ const unfollowUser = async (req = request, res = response) => {
         });
 
     } catch(errors) {
+        logger.error("Internal Server Error - " + errors);
         return res.status(500).json({
             msg: "Internal Server Error",
             errors

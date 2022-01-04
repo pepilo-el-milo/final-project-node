@@ -4,7 +4,7 @@ const {check} = require("express-validator");
  * @constant
  * @type {ValidationChain}
  */
-const userInfo = check("user", "User information is required").not().isEmpty();
+const userInfo = check("user", "user-can't be empty").not().isEmpty();
 
 /**
  * @constant
@@ -12,8 +12,8 @@ const userInfo = check("user", "User information is required").not().isEmpty();
  */
 const commonMW = [
     userInfo,
-    check("user.email", "Email is required").not().isEmpty(),
-    check("user.email", "Email format is incorrect").isEmail(),
+    check("user.email", "email-can't be empty").not().isEmpty(),
+    check("user.email", "email-format is incorrect").isEmail(),
 ];
 
 /**
@@ -22,7 +22,7 @@ const commonMW = [
  */
 const authMW = [
     ...commonMW,
-    check("user.password", "Password is required").not().isEmpty(),
+    check("user.password", "password-can't be empty").not().isEmpty(),
 ];
 
 /**
@@ -31,15 +31,15 @@ const authMW = [
  */
 const registrationMW = [
     ...commonMW,
-    check("user.username", "Username is required").not().isEmpty(),
-    check("user.password", "Password is required").not().isEmpty(),
+    check("user.username", "username-can't be empty").not().isEmpty(),
+    check("user.password", "username-can't be empty").not().isEmpty(),
 ];
 
 /**
  * @constant
  * @type {ValidationChain}
  */
-const articleInfo = check("article", "Article information is required").not().isEmpty();
+const articleInfo = check("article", "article-can't be empty").not().isEmpty();
 
 /**
  * @constant
@@ -47,10 +47,10 @@ const articleInfo = check("article", "Article information is required").not().is
  */
 const createArticleMW = [
     articleInfo,
-    check("article.title", "The article title is required").not().isEmpty(),
-    check("article.description", "The article description is required").not().isEmpty(),
-    check("article.body", "The article body is required").not().isEmpty(),
-    check("article.tagList", "The tags received are not a list").isArray(),
+    check("article.title", "title-can't be empty").not().isEmpty(),
+    check("article.description", "description-can't be empty").not().isEmpty(),
+    check("article.body", "body-can't be empty").not().isEmpty(),
+    check("article.tagList", "tagList-is not a list").isArray(),
 ];
 
 /**
@@ -58,8 +58,8 @@ const createArticleMW = [
  * @type {ValidationChain[]}
  */
 const createCommentMW = [
-    check("comment", "Comment information is required").not().isEmpty(),
-    check("comment.body", "The comment body is required").not().isEmpty(),
+    check("comment", "comment-can't be empty").not().isEmpty(),
+    check("comment.body", "body-can't be empty").not().isEmpty(),
 ];
 
 module.exports = {

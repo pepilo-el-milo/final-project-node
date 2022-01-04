@@ -1,5 +1,6 @@
 const { request, response } = require("express");
 const jwt = require("jsonwebtoken");
+const logger = require("../helpers/logger");
 
 const UserModel = require("../models/user");
 
@@ -16,6 +17,7 @@ const getUserFromToken = async (token) => {
 
         return await UserModel.findById(userId).populate("following").populate("favorite"); 
     } catch (err) {
+        logger.error(err);
         return null;
     }
 };
@@ -35,8 +37,9 @@ const validarJWT = async(req = request, res = response, next) =>{
     try{
 
         if(!token){
+            logger.warn("Token not valid");
             return res.status(401).json({
-                msg: "A valid token is required"
+                msg: "Token not valid"
             });
         }
 
@@ -45,8 +48,9 @@ const validarJWT = async(req = request, res = response, next) =>{
         const user = await getUserFromToken(token);
 
         if (!user){
+            logger.warn("Token not valid - User not found");
             return res.status(401).json({
-                msg: "Token not valid"
+                msg: "Token not valid - User not found"
             });
         }
 
@@ -55,6 +59,7 @@ const validarJWT = async(req = request, res = response, next) =>{
 
         next();
     } catch(err){
+        logger.error("Token not valid - " + err);
         return res.status(401).json({
             msg: "Token not valid",
             err
