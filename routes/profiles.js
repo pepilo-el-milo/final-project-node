@@ -38,6 +38,10 @@ const paramValidation = param("username").not().isEmpty();
  *              type: string
  *            required: true
  *            description: Username
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            type: string
  *      responses:
  *        200:
  *          description: User Profile Information
@@ -64,6 +68,11 @@ router.get("/:username", [paramValidation, validarCampos,findProfileByUser, veri
  *              type: string
  *            required: true
  *            description: Username
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: User Profile Information
@@ -92,6 +101,11 @@ router.post("/:username/follow", [paramValidation, validarCampos,findProfileByUs
  *              type: string
  *            required: true
  *            description: Username
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: User Profile Information

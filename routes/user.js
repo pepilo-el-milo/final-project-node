@@ -59,6 +59,12 @@ const router = Router();
  * /api/user:
  *    get:
  *      summary: Returns information of current user
+ *      parameters:
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: User information
@@ -81,6 +87,11 @@ router.get("/", validarJWT , getUser);
  *    put:
  *      summary: Updates user information
  *      parameters:
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *          - in: path
  *            name: id
  *            schema:

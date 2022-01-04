@@ -97,6 +97,10 @@ const router = Router();
  *            schema:
  *              type: string
  *            description: Search start point
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            type: string
  *      responses:
  *        200:
  *          description: All articles by filter
@@ -122,6 +126,12 @@ router.get("/", verificarJWT, getArticles);
  * /api/articles/feed:
  *    get:
  *      summary: Returns a list of articles from current user's following users
+ *      parameters:
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: Articles by feed
@@ -154,6 +164,10 @@ router.get("/feed", validarJWT , getFeed);
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            type: string
  *      responses:
  *        200:
  *          description: Article
@@ -175,6 +189,12 @@ router.get("/:slug", [verificarJWT, findArticleBySlug] , getArticle);
  * /api/articles/:
  *    post:
  *      summary: Creates article
+ *      parameters:
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      requestBody:
  *          required: true
  *          content:
@@ -211,6 +231,11 @@ router.post("/", [createArticleMW, validarCampos, validarJWT] , createArticle);
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      requestBody:
  *          required: true
  *          content:
@@ -249,6 +274,11 @@ router.put("/:slug", [articleInfo, validarCampos,  validarJWT, findArticleBySlug
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: Article Deleted
@@ -279,6 +309,11 @@ router.delete("/:slug", [validarJWT,findArticleBySlug], deleteArticle);
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: Article favorited
@@ -307,6 +342,11 @@ router.post("/:slug/favorite", [validarJWT,findArticleBySlug], favoriteArticle);
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: Article unfavorited

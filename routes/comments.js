@@ -45,6 +45,10 @@ const router = Router();
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            type: string
  *      responses:
  *        200:
  *          description: All comments
@@ -74,6 +78,11 @@ router.get("/", verificarJWT,getComments);
  *              type: string
  *            required: true
  *            description: Article title slug
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      requestBody:
  *          required: true
  *          content:
@@ -113,6 +122,11 @@ router.post("/", [createCommentMW, validarJWT, validarCampos], addComment);
  *              type: string
  *            required: true
  *            description: Comment Id
+ *          - in: header
+ *            name: Authorization
+ *            description: JWT Token
+ *            required: true
+ *            type: string
  *      responses:
  *        200:
  *          description: Created
