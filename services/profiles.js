@@ -1,5 +1,5 @@
 const { request, response } = require("express");
-const { profileResponse } = require("../helpers/responses");
+const { profileResponse } = require("../helpers/index");
 const logger = require("../helpers/logger");
 
 /**

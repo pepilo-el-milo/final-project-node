@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const bcryptjs = require("bcryptjs");
 
 const UserModel = require("../models/user");
-const { userResponse } = require("../helpers/responses");
+const { userResponse } = require("../helpers/index");
 const logger = require("../helpers/logger");
 
 /**

@@ -5,7 +5,7 @@ require("dotenv").config();
 
 jest.setTimeout(10000)
 
-describe('GET /api/tags', () => {
+describe('Get All comments', () => {
     beforeAll((done) => {
         mongoose.connect(process.env.MONGO).then(() => {
             done()
@@ -16,12 +16,12 @@ describe('GET /api/tags', () => {
             done()
         })
     })
-    it('Should get Tags', (done) => {
-        request(app)
-        .get('/api/tags')
-        .set('Accept', 'application/json')
-        .set('Content-Type', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(200, (res) => done())
+    describe('GET /articles/:slug/comments', () => {
+        it('Should return list of comments', (done) => {
+            request(app)
+            .get('/api/articles/how-to-train-your-dragon/comments')
+            .expect('Content-Type', /json/)
+            .expect(200, (res) => done())
+        })
     })
 })

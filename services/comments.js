@@ -1,5 +1,5 @@
 const { request, response } = require("express");
-const { commentResponse, mapComments } = require("../helpers/responses");
+const { commentResponse, mapComments } = require("../helpers/index");
 const CommentModel = require("../models/comments");
 const logger = require("../helpers/logger");
 
