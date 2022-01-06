@@ -13,4 +13,13 @@ describe('Find user by username', () => {
             done()
         })
     })
+    it('Should be ok', async() => {
+        expect(1).toBe(1);
+    })
+    it('Should return user - PepiloXD', () => {
+        expect.assertions(1)
+        return findByUsername('PepiloXD').then((user) => {
+            expect(user.email).toBe('pepe@hotmail.com')
+        })
+    })
 })

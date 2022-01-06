@@ -13,4 +13,7 @@ describe('Check Tags', () => {
             done()
         })
     })
+    it('Should be ok', async() => {
+        expect(1).toBe(1);
+    })
 })

@@ -14,7 +14,6 @@ describe('Auth', () => {
     })
     afterAll((done) => {
         UserModel.findOneAndRemove({email: "test@hotmail.com"}).then((docs) => {
-            console.log("Se eliminó");
             mongoose.disconnect().then(() => {
                 done()
             });
