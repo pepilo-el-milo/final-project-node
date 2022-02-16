@@ -1,11 +1,11 @@
-const {Schema, model} = require("mongoose");
+const mongoose = require("mongoose");
 
 /**
  * User Schema
  * @constant
  * @type {Schema}
  */
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -21,8 +21,10 @@ const UserSchema = new Schema({
     },
     bio: {type: String},
     image: {type: String},
-    following: [{type: Schema.Types.ObjectId, ref: "User"}],
-    favorite: [{type: Schema.Types.ObjectId, ref: "Article"}]
+    following: [{type: mongoose.Schema.Types.ObjectId, ref: "User"}],
+    favorite: [{type: mongoose.Schema.Types.ObjectId, ref: "Article"}]
+},{
+    timestamps: false
 });
 
-module.exports = model("User", UserSchema);
+module.exports = mongoose.models.User || mongoose.model("User", UserSchema);

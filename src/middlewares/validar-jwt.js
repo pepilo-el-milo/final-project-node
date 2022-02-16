@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const jwt = require("jsonwebtoken");
 const logger = require("../helpers/logger");
+const config = require("config");
 
 const UserModel = require("../models/user");
 
@@ -13,7 +14,7 @@ const UserModel = require("../models/user");
  */
 const getUserFromToken = async (token) => {
     try {
-        const {userId} = jwt.verify(token, process.env.SECRETKEY);
+        const {userId} = jwt.verify(token, config.get("secretkey"));
 
         return await UserModel.findById(userId).populate("following").populate("favorite"); 
     } catch (err) {

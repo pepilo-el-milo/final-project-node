@@ -1,11 +1,11 @@
-const {Schema, model} = require("mongoose");
+const mongoose = require("mongoose");
 
 /**
  * Article Schema
  * @constant
  * @type {Schema}
  */
-const ArticleSchema = new Schema({
+const ArticleSchema = new mongoose.Schema({
     title: {type: String, required: true},
     slug: {type: String, required: true},
     description: {type: String, required: true},
@@ -14,10 +14,10 @@ const ArticleSchema = new Schema({
     createdAt: {type: String, required: true},
     favoritesCount: {type: Number},
     updatedAt: {type: String},
-    author: {type: Schema.Types.ObjectId, ref: "User", required: true},
-    comments: [{type: Schema.Types.ObjectId, ref: "Comment"}]
+    author: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+    comments: [{type: mongoose.Schema.Types.ObjectId, ref: "Comment"}]
 },{
     timestamps: false
 });
 
-module.exports = model("Article", ArticleSchema);
+module.exports = mongoose.models.Article || mongoose.model("Article", ArticleSchema);

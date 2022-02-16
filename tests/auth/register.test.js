@@ -1,7 +1,7 @@
 const request = require('supertest')
-const app = require('../../app')
+const app = require('../../src/app')
 const mongoose = require("mongoose");
-const UserModel = require("../../models/user")
+const UserModel = require("../../src/models/user")
 require("dotenv").config();
 
 jest.setTimeout(10000)

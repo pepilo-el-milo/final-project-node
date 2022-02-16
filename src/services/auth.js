@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user");
 const logger = require("../helpers/logger");
+const config = require("config");
 require("dotenv").config();
 
 /**
@@ -34,7 +35,7 @@ const login = async(req = request, res = response) => {
             });
         }
 
-        const token = jwt.sign({userId : user._id}, process.env.SECRETKEY);
+        const token = jwt.sign({userId : user._id}, config.get("secretkey"));
 
         return res.status(200).json({
             user: {
@@ -98,7 +99,7 @@ const createUser = async(req = request, res = response) => {
 
         await user.save();
         
-        const token = jwt.sign({userId : user._id}, process.env.SECRETKEY, {expiresIn: "1h"});
+        const token = jwt.sign({userId : user._id}, config.get("secretkey"), {expiresIn: "1h"});
 
         return res.status(201).json({
             user: {

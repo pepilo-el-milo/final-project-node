@@ -1,6 +1,6 @@
 const app = require("./app");
 const {connection} = require("./db/mongo");
-const {swaggerConfig} = require("./config/swagger-confij");
+const {swaggerConfig} = require("../config/swagger-confij");
 const logger = require("./helpers/logger");
 require("dotenv").config();
 

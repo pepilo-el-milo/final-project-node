@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const {findByUsername} = require("../../helpers/index")
+const {findByUsername} = require("../../src/helpers/index")
 
 describe('Find user by username', () => {
     beforeAll((done) => {

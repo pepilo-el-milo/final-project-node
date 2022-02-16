@@ -1,5 +1,5 @@
-const {articleResponse, userResponse, profileResponse, commentResponse} = require("../../helpers/index")
-const user = require("../../models/user")
+const {articleResponse, userResponse, profileResponse, commentResponse} = require("../../src/helpers/index")
+const user = require("../../src/models/user")
 
 const testUser = {
     email: 'test@hotmail.com',
